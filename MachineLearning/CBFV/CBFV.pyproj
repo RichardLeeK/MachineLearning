@@ -23,9 +23,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CBFV.py" />
+    <Compile Include="CBFVTester.py" />
     <Compile Include="data_gen.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICP.py" />
+    <Compile Include="ml\autoencoder.py" />
+    <Compile Include="ml\cnn.py" />
     <Compile Include="ml\deep_model.py">
       <SubType>Code</SubType>
     </Compile>
@@ -35,9 +39,11 @@
     <Compile Include="ml\public.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ml\sequential_selection.py" />
     <Compile Include="ml\shallow_model.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ml\tsne.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ml\" />
