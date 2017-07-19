@@ -35,7 +35,6 @@
     <Compile Include="process.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SignalImage.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

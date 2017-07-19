@@ -22,13 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="figures.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Img3DProcess.py" />
-    <Compile Include="pymesh.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
