@@ -22,7 +22,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DeCNN.py" />
     <Compile Include="model.py">
       <SubType>Code</SubType>
     </Compile>
