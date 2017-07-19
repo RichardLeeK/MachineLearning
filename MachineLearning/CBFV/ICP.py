@@ -8,7 +8,7 @@ import data_gen as dg
 import sys
 import numpy as np
 
-mode = 'ABP_SEP_FORICP'
+mode = 'ABP_SEP_FOR_ICP'
 
 def pos_counter(Y):
   cnt = 0

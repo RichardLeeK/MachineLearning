@@ -35,7 +35,7 @@ def autoencoding(train_x, test_x, img_dim=128, encoding_dim=32):
   r_test_x = test_x.astype('float32')/255
   r_test_x = r_test_x.reshape((len(r_test_x), np.prod(r_test_x.shape[1:])))
 
-  autoencoder.fit(r_train_x, r_train_x, epochs=10, batch_size=100, shuffle=True)
+  autoencoder.fit(r_train_x, r_train_x, epochs=100, batch_size=100, shuffle=True)
   encoded_imgs = encoder.predict(r_test_x)
   decoded_imgs = decoder.predict(encoded_imgs)
   return decoded_imgs
@@ -58,13 +58,13 @@ def autoencoding_cnn(train_x, test_x, img_dim=128, encoding_dim=32):
   autoencoder = Model(input_img, decoded)
   autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 
-  r_train_x = train_x.astype('float32')/255
+  r_train_x = np.array(train_x).astype('float32')/255
   r_train_x = np.reshape(r_train_x, (len(r_train_x), img_dim, img_dim, 1))
 
-  r_test_x = test_x.astype('float32')/255
+  r_test_x = np.array(test_x).astype('float32')/255
   r_test_x = np.reshape(r_test_x, (len(r_test_x), img_dim, img_dim, 1))
 
-  autoencoder.fit(r_train_x, r_train_x, epochs=10, batch_size=100, shuffle=True)
+  autoencoder.fit(r_train_x, r_train_x, epochs=100, batch_size=100, shuffle=True)
   decoded_imgs = autoencoder.predict(r_test_x)
   return decoded_imgs
 

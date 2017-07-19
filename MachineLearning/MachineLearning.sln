@@ -7,6 +7,14 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MachineLearning", "MachineL
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "CBFV", "CBFV\CBFV.pyproj", "{48581065-1130-438B-8E55-9B5B32ABA7A6}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Img3DProcess", "Img3DProcess\Img3DProcess.pyproj", "{977E0B1D-EBD8-49FA-91ED-B18E6A27FC86}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "DeCNN", "DeCNN\DeCNN.pyproj", "{E2B7B30C-DD93-4E21-BD70-486117AF187D}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "SignalImage", "SignalImage\SignalImage.pyproj", "{1D54A01A-B8FC-476A-A077-9FF8771F1192}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "BendingMachine", "BendingMachine\BendingMachine.pyproj", "{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +25,14 @@ Global
 		{1AD6B0F0-2F29-46DA-BEE9-CE410E89106B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48581065-1130-438B-8E55-9B5B32ABA7A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48581065-1130-438B-8E55-9B5B32ABA7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{977E0B1D-EBD8-49FA-91ED-B18E6A27FC86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{977E0B1D-EBD8-49FA-91ED-B18E6A27FC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2B7B30C-DD93-4E21-BD70-486117AF187D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2B7B30C-DD93-4E21-BD70-486117AF187D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D54A01A-B8FC-476A-A077-9FF8771F1192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D54A01A-B8FC-476A-A077-9FF8771F1192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,6 +11,25 @@ import pickle
 import datetime
 from ml.public import *
 
+def ann_build_generator(latent_size):
+  model = Sequential()
+  model.add(Dense(output_dim=5, input_dim=latent_size, activation='sigmoid', init='glorot_uniform'))
+  model.add(Dense(output_dim=5, activation='sigmoid', init='glorot_uniform'))
+  model.add(Dense(output_dim=1, activation='sigmoid', init='glorot_uniform'))
+  return model
+
+def ann_train_test(X_train, X_test, Y_train, Y_test):
+  st = datetime.datetime.now()
+  model = ann_build_generator(len(X_train[0]))
+  model.fit(X_train, Y_train, epochs=100)
+  with open('network/ann.net', 'wb') as handle:
+    pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
+  Y_pred = model.predict(X_test)
+  tp, tn, fp, fn = pred_test_lstm(Y_pred, Y_test)
+  ed = datetime.datetime.now()
+  print('Artificial Neural Network finished ' + str(ed - st))
+  print('TP: ' + str(tp) + '\tTN: ' + str(tn) + '\tFP: ' + str(fp) + '\tFN: ' + str(fn))
+  return 'Artificial Neural Network,' + gen_result_line(tp, tn, fp, fn)
 
 def dnn_build_generator(latent_size):
   model = Sequential()
@@ -29,7 +48,7 @@ def dnn_build_generator(latent_size):
 def dnn_train_test(X_train, X_test, Y_train, Y_test):
   st = datetime.datetime.now()
   model = dnn_build_generator(len(X_train[0]))
-  model.fit(X_train, Y_train, epochs=100)
+  model.fit(X_train, Y_train, epochs=10)
   with open('network/dnn.net', 'wb') as handle:
     pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
   Y_pred = model.predict(X_test)

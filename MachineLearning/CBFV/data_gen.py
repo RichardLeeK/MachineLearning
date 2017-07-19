@@ -105,10 +105,15 @@ def gen_x(info_list, analysis = ['BAS', 'SPE', 'HRV', 'BRS', 'MOR', 'PHA', 'OTH'
           params.add(k)
           feature.append(v)
     if 'SPE' in analysis:
-      spec_params = list(dat.spectral.keys())
-      selected_parameter = parameter_divider(spec_params, diameter)
-      for k, v in dat.spectral.items():
-        if k in selected_parameter:
+      if diameter != '':
+        spec_params = list(dat.spectral.keys())
+        selected_parameter = parameter_divider(spec_params, diameter)
+        for k, v in dat.spectral.items():
+          if k in selected_parameter:
+            params.add(k)
+            feature.append(v)
+      else:
+        for k, v in dat.spectral.items():
           params.add(k)
           feature.append(v)
     if 'HRV' in analysis:
@@ -120,10 +125,15 @@ def gen_x(info_list, analysis = ['BAS', 'SPE', 'HRV', 'BRS', 'MOR', 'PHA', 'OTH'
         params.add(k)
         feature.append(v)
     if 'MOR' in analysis:
-      morp_params = list(dat.morphology.keys())
-      selected_parameter = parameter_divider(morp_params, diameter)
-      for k, v in dat.morphology.items():
-        if k in selected_parameter:
+      if diameter != '':
+        morp_params = list(dat.morphology.keys())
+        selected_parameter = parameter_divider(morp_params, diameter)
+        for k, v in dat.morphology.items():
+          if k in selected_parameter:
+            params.add(k)
+            feature.append(v)
+      else:
+        for k, v in dat.morphology.items():
           params.add(k)
           feature.append(v)
     if 'PHA' in analysis:
@@ -381,6 +391,33 @@ def test_data_extractor(info_list, fold = 0):
     else:
       train_info_list.append(p)
   return train_info_list, test_info_list
+
+def cross_validation_DS_gen(info_list, fold = 5):
+  p_map = {}
+  for p in info_list:
+    k = p.patient[0:3]
+    if k not in p_map:
+      p_map[k] = 0
+    p_map[k] += 1
+  pat_list = list(p_map.keys())
+  import random
+  random.shuffle(pat_list)
+  folderLen = int(len(pat_list) / fold)
+  pat_list_list = []
+  for i in range(fold):
+    pat_list_list.append(pat_list[i*folderLen:(i+1)*folderLen])
+  cv_info_list = []
+  for i in range(fold):
+    cv_info_list.append([])
+  for p in info_list:
+    for i in range(fold):
+      if p.patient[0:3] in pat_list_list[i]:
+        cv_info_list[i].append(p)
+  return cv_info_list
+
+
+
+
 
 
     

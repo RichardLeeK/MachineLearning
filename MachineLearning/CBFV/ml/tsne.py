@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, 'D:/Sources/Python Source Code')
+sys.path.insert(0, 'D:/Sources/Python Source Code/MachineLearning/CBFV')
+import os
 import ml.autoencoder as ac
 import os
 import numpy as np
@@ -48,7 +49,7 @@ def find_nearest_point(x, y, imgs):
 
 def kmeans_clustering(X, Y):
   from sklearn.cluster import KMeans
-  kmeans = KMeans(n_clusters=12, random_state=0).fit(X)
+  kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
   pred_Y = kmeans.predict(Y)
   return pred_Y
 
@@ -71,44 +72,49 @@ class ClickEvent:
     self.fig.canvas.draw()
     plt.show()
 
-class DragEvent:
-  def __init__(self, fig, imgs):
-    self.fig = plt.get_current_fig_manager().canvas.figure
-    self.imgs = imgs
-  
-
-if __name__ ==  '__main__':
-  path = 'D:/Richard/CBFV/Auto-encoder/interpolate/test/'
-  signals, filename = ac.load_data(path)
-  filename = filename.split('_')[0]
-  imgs = ac.signal_to_img(signals)
-  rep_imgs = ac.autoencoding(imgs, imgs, encoding_dim=32)
-  
-
+def image_print(filename, signals, imgs, rep_imgs, rep_imgs_comp):
   tsne_o = manifold.TSNE(n_components=2, init='pca', random_state=0)
   Y_o = tsne_o.fit_transform(signals)
-
-
   tsne_r = manifold.TSNE(n_components=2, init='pca', random_state=0)
-  Y_r = tsne_r.fit_transform(rep_imgs)
-
+  rep_imgs_array = rep_imgs.reshape(len(rep_imgs), 128*128)
+  Y_r = tsne_r.fit_transform(rep_imgs_array)
+  
   #colors = ['b', 'r', 'g']
   kc = kmeans_clustering(Y_r, Y_r)
-  
+  if os.path.isdir('tsne_img/'+filename):
+    os.remove('tsne_img/'+filename)
   os.mkdir('tsne_img/'+filename)
   os.mkdir('tsne_img/'+filename+'/ori')
   os.mkdir('tsne_img/'+filename+'/rep')
+  os.mkdir('tsne_img/'+filename+'/rep_dnn')
+  """
   for i in range(12):
     os.mkdir('tsne_img/'+filename+'/ori/'+str(i))
     os.mkdir('tsne_img/'+filename+'/rep/'+str(i))
-
+    os.mkdir('tsne_img/'+filename+'/rep_dnn/'+str(i))
+  """
   for i in range(len(kc)):
     plt.figure()
     plt.imshow(imgs[i].reshape(128, 128))
-    plt.savefig('tsne_img/' + filename + '/ori/'+ str(kc[i]) + '/' + str(i) + '_' + str(round(Y_o[i, 0], 3)) + ',' + str(round(Y_o[i, 1], 3)) + '.png')
+    plt.savefig('tsne_img/' + filename + '/ori/' + str(i) + '_' + str(round(Y_o[i, 0], 3)) + ',' + str(round(Y_o[i, 1], 3)) + '.png')
     plt.figure()
     plt.imshow(rep_imgs[i].reshape(128, 128))
-    plt.savefig('tsne_img/' + filename + '/rep/' + str(kc[i]) + '/' + str(i) + '_' + str(round(Y_r[i, 0], 3)) + ',' + str(round(Y_r[i, 1], 3)) + '.png')
+    plt.savefig('tsne_img/' + filename + '/rep/' + str(i) + '_' + str(round(Y_r[i, 0], 3)) + ',' + str(round(Y_r[i, 1], 3)) + '.png')
+    plt.figure()
+    plt.imshow(rep_imgs_comp[i].reshape(128, 128))
+    plt.savefig('tsne_img/' + filename + '/rep_dnn/' + str(i) + '_' + str(round(Y_r[i, 0], 3)) + ',' + str(round(Y_r[i, 1], 3)) + '.png')
+  return
+
+if __name__ ==  '__main__':
+  path = 'D:/Richard/CBFV/Auto-encoder/interpolate/test/'
+  signals, filenames = ac.load_data(path)
+  for i in range(len(filenames)):
+    filename = filenames[i].split('_')[0]
+    imgs = ac.signal_to_img(signals[i])
+    rep_imgs = ac.autoencoding_cnn(imgs, imgs, encoding_dim=32)
+    rep_imgs_comp = ac.autoencoding(imgs, imgs, encoding_dim=32)
+    image_print(filename, signals[i], imgs, rep_imgs, rep_imgs_comp)
+  print('fin')
 
 
   """

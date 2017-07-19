@@ -27,8 +27,11 @@ nb_data = len(names)
 
 FCN = PatchBasedCNN(img_height=patch_size, img_width=patch_size, nb_class=nb_class)
 train_model = FCN.create_model()
-
-train_model.fit_generator(generate_train_list(names, path_to_train, path_to_target, img_size, patch_size, nb_class), samples_per_epoch=nb_data, nb_epoch=100)
+"""
+train_model.fit_generator(generate_train_list(names, path_to_train, path_to_target, img_size, patch_size, nb_class), samples_per_epoch=nb_data, nb_epoch=1)
+"""
+x, y = generate_train_data_1(names[0], path_to_train, path_to_target, img_size, patch_size, nb_class)
+train_model.fit(x, y, epochs=1)
 
 train_model.save_weights('other/weights')
 

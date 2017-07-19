@@ -30,7 +30,7 @@ def svm_train_test(X_train, X_test, Y_train, Y_test):
   return 'SVM,' + gen_result_line(tp, tn, fp, fn)
 
 # Random forest
-def rf_train_test(X_train, X_test, Y_train, Y_test, OL_test):
+def rf_train_test(X_train, X_test, Y_train, Y_test):
   st = datetime.datetime.now()
   rf = RandomForestClassifier(n_estimators=500)
   """
@@ -44,15 +44,13 @@ def rf_train_test(X_train, X_test, Y_train, Y_test, OL_test):
     pickle.dump(rf, handle, protocol=pickle.HIGHEST_PROTOCOL)
   Y_pred = rf.predict(X_test)
   Y_prob = rf.predict_proba(X_test)
-  for i in range(0, len(Y_pred)):
-    OL_test[i].infusion([Y_prob[i][-1], Y_test[i], Y_pred[i], 1 if Y_pred[i] == Y_test[i] else 0])
   tp, tn, fp, fn = pred_test(Y_pred, Y_test)
   ed = datetime.datetime.now()
   print('Random Forest fininshed ' + str(ed - st))
   print('TP: ' + str(tp) + '\tTN: ' + str(tn) + '\tFP: ' + str(fp) + '\tFN: ' + str(fn))
   return 'Random Forest,' + gen_result_line(tp, tn, fp, fn)
 
-def gb_train_test(X_train, X_test, Y_train, Y_test, OL_test):
+def gb_train_test(X_train, X_test, Y_train, Y_test):
   st = datetime.datetime.now()
   gb = GradientBoostingClassifier(n_estimators=500)
   """
@@ -66,15 +64,13 @@ def gb_train_test(X_train, X_test, Y_train, Y_test, OL_test):
     pickle.dump(gb, handle, protocol=pickle.HIGHEST_PROTOCOL)
   Y_pred = gb.predict(X_test)
   Y_prob = gb.predict_proba(X_test)
-  for i in range(0, len(Y_pred)):
-    OL_test[i].infusion([Y_prob[i][-1], Y_test[i], Y_pred[i], 1 if Y_pred[i] == Y_test[i] else 0])
   tp, tn, fp, fn = pred_test(Y_pred, Y_test)
   ed = datetime.datetime.now()
   print('Gradient Boosting finished ' + str(ed - st))
   print('TP: ' + str(tp) + '\tTN: ' + str(tn) + '\tFP: ' + str(fp) + '\tFN: ' + str(fn))
   return 'Gradient Boosting,' + gen_result_line(tp, tn, fp, fn)
 
-def lr_train_test(X_train, X_test, Y_train, Y_test, OL_test):
+def lr_train_test(X_train, X_test, Y_train, Y_test):
   st = datetime.datetime.now()
   lr = LogisticRegression()
   """
@@ -88,8 +84,6 @@ def lr_train_test(X_train, X_test, Y_train, Y_test, OL_test):
     pickle.dump(lr, handle, protocol=pickle.HIGHEST_PROTOCOL)
   Y_pred = lr.predict(X_test)
   Y_prob = lr.predict_proba(X_test)
-  for i in range(0, len(Y_pred)):
-    OL_test[i].infusion([Y_prob[i][-1], Y_test[i], Y_pred[i], 1 if Y_pred[i] == Y_test[i] else 0])
   tp, tn, fp, fn = pred_test(Y_pred, Y_test)
   ed = datetime.datetime.now()
   print('Logistic Regression finished ' + str(ed - st))

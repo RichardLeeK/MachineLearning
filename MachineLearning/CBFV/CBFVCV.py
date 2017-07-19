@@ -7,8 +7,8 @@ import sys
 import numpy as np
 import threading
 
-parameter_class = ''
-threshold = 1.56
+parameter_class = 'HRV,SPE,MOR(3)R'
+threshold = 1.3
 fold = 5
 
 mode = parameter_class + '_' + str(threshold) + '_' + str(fold)
@@ -31,8 +31,9 @@ if __name__ == '__main__':
       if i == j: continue
       train_list += cv_list[j]
     valid_list = cv_list[i]
-    X_train, param, _ = dg.gen_x(train_list, [], '')
-    X_test, _, _ = dg.gen_x(valid_list, [], '')
+    X_train, param, _ = dg.gen_x(train_list, ['BAS', 'HRV', 'SPE', 'MOR'], '')
+    X_test, _, _ = dg.gen_x(valid_list, ['BAS', 'HRV', 'SPE', 'MOR'], '')
+    print('Use ' + str(len(param)) + ' features!')
     pen = open('rubbish/params.csv', 'a')
     sentence = '\n' + mode
     for p in param:
@@ -56,22 +57,22 @@ if __name__ == '__main__':
     Y_train = np.array(Y_train)
     Y_test = np.array(Y_test)
 
-    line = mode + ',' + sm.rf_train_test(X_train, X_test, Y_train, Y_test)
+    line = mode + ',' + str(i) +',' + sm.rf_train_test(X_train, X_test, Y_train, Y_test)
     pen = open('CVRes.csv', 'a')
     pen.write(line + '\n')
     pen.close()
 
-    line = mode + ',' + sm.lr_train_test(X_train, X_test, Y_train, Y_test)
+    line = mode + ',' + str(i) + ',' + sm.lr_train_test(X_train, X_test, Y_train, Y_test)
     pen = open('CVRes.csv', 'a')
     pen.write(line + '\n')
     pen.close()
 
-    line = mode + ',' + sm.gb_train_test(X_train, X_test, Y_train, Y_test)
+    line = mode + ',' + str(i) + ',' + sm.gb_train_test(X_train, X_test, Y_train, Y_test)
     pen = open('CVRes.csv', 'a')
     pen.write(line + '\n')
     pen.close()
 
-    line = mode + ',' + dl.dnn_train_test(X_train, X_test, Y_train, Y_test)
+    line = mode + ',' + str(i) + ',' + dl.dnn_train_test(X_train, X_test, Y_train, Y_test)
     pen = open('CVRes.csv', 'a')
     pen.write(line + '\n')
     pen.close()

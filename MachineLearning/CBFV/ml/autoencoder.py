@@ -1,4 +1,4 @@
-from keras.layers import Input, Dense
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D
 from keras.models import Model
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,10 +35,40 @@ def autoencoding(train_x, test_x, img_dim=128, encoding_dim=32):
   r_test_x = test_x.astype('float32')/255
   r_test_x = r_test_x.reshape((len(r_test_x), np.prod(r_test_x.shape[1:])))
 
-  autoencoder.fit(r_train_x, r_train_x, epochs=50, batch_size=100, shuffle=True)
+  autoencoder.fit(r_train_x, r_train_x, epochs=10, batch_size=100, shuffle=True)
   encoded_imgs = encoder.predict(r_test_x)
   decoded_imgs = decoder.predict(encoded_imgs)
   return decoded_imgs
+
+def autoencoding_cnn(train_x, test_x, img_dim=128, encoding_dim=32):
+  input_img = Input(shape=(img_dim, img_dim, 1))
+  x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+  x = MaxPooling2D((2, 2), padding='same')(x)
+  x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+  encoded = MaxPooling2D((2, 2), padding='same')(x)
+
+  # at this point the representation is (7, 7, 32)
+
+  x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+  x = UpSampling2D((2, 2))(x)
+  x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+  x = UpSampling2D((2, 2))(x)
+  decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+
+  autoencoder = Model(input_img, decoded)
+  autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+
+  r_train_x = train_x.astype('float32')/255
+  r_train_x = np.reshape(r_train_x, (len(r_train_x), img_dim, img_dim, 1))
+
+  r_test_x = test_x.astype('float32')/255
+  r_test_x = np.reshape(r_test_x, (len(r_test_x), img_dim, img_dim, 1))
+
+  autoencoder.fit(r_train_x, r_train_x, epochs=10, batch_size=100, shuffle=True)
+  decoded_imgs = autoencoder.predict(r_test_x)
+  return decoded_imgs
+
+
 
 def show_imgs(first, second, img_dim=128, n=8):
   plt.figure(figsize=(15,5))
@@ -62,14 +92,16 @@ def load_data(path):
   for file in files:
     f = open(path+file)
     lines = f.readlines()
-    f.close()    
+    f.close()
+    cur_file_sig = []
     for line in lines:
       sl = line.split(',')
       cur_sig = []
       for v in sl[1:]:
         cur_sig.append(float(v))
-      signals.append(cur_sig)
-  return signals, files[0]
+      cur_file_sig.append(cur_sig)
+    signals.append(cur_file_sig)
+  return signals, files
 
 def load_data_raw(path):
   import os
