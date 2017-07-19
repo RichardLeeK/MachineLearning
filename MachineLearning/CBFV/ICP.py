@@ -42,6 +42,7 @@ if __name__ == "__main__":
   print('Train Negative: ' + str(len(Y_train)-cnt))
   print('Test Positive: ' + str(cnt_test))
   print('Test Negative: ' + str(len(Y_test)-cnt_test))
+
   """ Regulization
   X, Y = dg.pos_neg_regulator(X, Y, cnt, len(Y) - cnt)
   pos_cnt, neg_cnt = pos_counter(Y)
