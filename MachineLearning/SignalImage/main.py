@@ -18,21 +18,28 @@ if __name__ == '__main__':
     total_image.extend(imgs)
     file_len_map[filename] = [bef_cnt, bef_cnt + len(imgs)]
     bef_cnt += len(imgs)
-  
+  """
   total_rep_imgs = ae.autoencoding_cnn(total_image, total_image, img_dim=128, encoding_dim=32)
-
+  """
   gos_color = ['b', 'g', 'r', 'c', 'm']
-  
+  pen = open('img/label.csv', 'w')
+  cnt = 0
   for k, v in file_len_map.items():
     for i in range(v[0], v[1]):
       plt.figure(1)
       plt.imshow(total_image[i].reshape(128, 128))
-      plt.savefig('img/signal_100/ori/'+k+'.png')
-      
+      plt.savefig('img/signal_ori/ori/'+k+'_'+str(i)+'.png')
+      pen.write(str(i)+'\n')
+
+      if cnt % 10 == 0:
+        print('P: ('+str(cnt)+'/'+str(len(total_image))+')')
+      cnt += 1
+      """
       plt.figure(1)
       plt.imshow(total_rep_imgs[i].reshape(128, 128))
-      plt.savefig('img/signal_100/rep/'+k+'.png')
-
+      plt.savefig('img/signal_100/rep/'+k+'_'+str(i-v[0])+'.png')
+      """
+  """
   Y_o = mf.tSNELearning(total_image, n_component=5, init='pca', random_state=0)
   Y_r = mf.tSNELearning(total_rep_imgs, n_component=5, init='pca', random_state=0)
   
@@ -45,5 +52,5 @@ if __name__ == '__main__':
     for i in rnage(v[0], v[1]):
       plt.scatter(Y_r[i][0], Y_r[i][1], color=gos_color[gos_map[k]])
   plt.show()
-  
+  """
 
