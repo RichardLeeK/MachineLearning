@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>1d54a01a-b8fc-476a-a077-9ff8771f1192</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>peak_detection.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -30,6 +30,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="manifold.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="peak_detection.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="process.py">

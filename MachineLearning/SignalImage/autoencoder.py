@@ -42,18 +42,18 @@ def autoencoding(train_x, test_x, img_dim=128, encoding_dim=32):
 
 def autoencoding_cnn(train_x, test_x, img_dim=128, encoding_dim=32):
   input_img = Input(shape=(img_dim, img_dim, 1))
-  x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+  x = Conv2D(32, 3, 3, activation='relu', padding='same')(input_img)
   x = MaxPooling2D((2, 2), padding='same')(x)
-  x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+  x = Conv2D(32, 3, 3, activation='relu', padding='same')(x)
   encoded = MaxPooling2D((2, 2), padding='same')(x)
 
   # at this point the representation is (7, 7, 32)
 
-  x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+  x = Conv2D(32, 3, 3, activation='relu', padding='same')(encoded)
   x = UpSampling2D((2, 2))(x)
   x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
   x = UpSampling2D((2, 2))(x)
-  decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+  decoded = Conv2D(1, 3, 3, activation='sigmoid', padding='same')(x)
 
   autoencoder = Model(input_img, decoded)
   autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
