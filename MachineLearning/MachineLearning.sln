@@ -15,6 +15,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "SignalImage", "SignalImage\
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "BendingMachine", "BendingMachine\BendingMachine.pyproj", "{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "CNN_PLATEAU", "CNN_PLATEAU\CNN_PLATEAU.pyproj", "{CC047219-E32A-4C02-8583-B2FD5529221A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{1D54A01A-B8FC-476A-A077-9FF8771F1192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1614F6D1-6C77-4CAB-9B05-F4853F7FAB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC047219-E32A-4C02-8583-B2FD5529221A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC047219-E32A-4C02-8583-B2FD5529221A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
