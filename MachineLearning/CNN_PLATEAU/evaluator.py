@@ -15,6 +15,7 @@ def eval_model(model,env):
 
     save_result=env.get_config("test","save_result",type="int")
     save_graph=env.get_config("test","save_graph",type="int")
+    save_time=env.get_config("test","save_time",type="int")
     segment_test=env.get_config("test","segment_test",type="int")
     hour_limit=env.get_config("test","hour_limit",type="int")
 
@@ -35,12 +36,32 @@ def eval_model(model,env):
                 confusion=confusion+get_segment_confusion(true,pred)
             else:
                 confusion=confusion+get_confusion(true,pred)
+        if save_time==1:
+            save_pred_time(pred,dataX[0],filepath,env)
     if save_result==1:
         if segment_test==1:
             segment_confusion_result(confusion,env)
         else:
             confusion_result(confusion,env)
-
+def save_pred_time(pred,timelapse,filepath,env):
+    result_path=env.get_config("path","result_path")
+    f = open(result_path+"/time.csv", 'a', encoding='utf-8', newline='')
+    wr = csv.writer(f)
+    pred_progress=0;
+    pred_start=0; pred_end=0;
+    for i in range(len(pred)):
+        # pred
+        if (pred[i]==1) and (pred_progress==0): # prediction segment start
+            pred_progress=1
+            pred_start=i
+        elif (pred[i]==0) and (pred_progress==1): # prediction segment end
+            pred_progress=0
+            pred_end=i
+            time_row=np.array([filepath,timelapse[pred_start],timelapse[pred_end]])
+            wr.writerow(time_row)
+        else:
+            continue
+    f.close()
 def draw_graph(data,true,pred,fileidx,env,idx_group=[]):
     figure_x=env.get_config("test","figure_x",type="int")
     figure_y=env.get_config("test","figure_y",type="int")
@@ -113,7 +134,7 @@ def save_confusion(confusion,env):
     new_row=[datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     new_row.extend(confusion)
     result_path=env.get_config("path","result_path")
-    with open(result_path,'a') as f:
+    with open(result_path+"/result.csv",'a') as f:
         writer=csv.writer(f)
         writer.writerow(new_row)
 
