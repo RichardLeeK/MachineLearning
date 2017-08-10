@@ -15,6 +15,7 @@ def eval_model(model,env):
 
     save_result=env.get_config("test","save_result",type="int")
     save_graph=env.get_config("test","save_graph",type="int")
+    segment_test=env.get_config("test","segment_test",type="int")
     hour_limit=env.get_config("test","hour_limit",type="int")
 
     confusion=np.zeros(4)
@@ -30,9 +31,15 @@ def eval_model(model,env):
             idx_group=pp.cut_idx_by_hour(dataX,hour_limit=3)
             figure_num=draw_graph(dataX,true,pred,fileidx,env,idx_group)        
         if save_result==1:
-            confusion=confusion+get_confusion(true,pred)
+            if segment_test==1:
+                confusion=confusion+get_segment_confusion(true,pred)
+            else:
+                confusion=confusion+get_confusion(true,pred)
     if save_result==1:
-        confusion_result(confusion,env)
+        if segment_test==1:
+            segment_confusion_result(confusion,env)
+        else:
+            confusion_result(confusion,env)
 
 def draw_graph(data,true,pred,fileidx,env,idx_group=[]):
     figure_x=env.get_config("test","figure_x",type="int")
@@ -89,6 +96,19 @@ def confusion_result(confusion,env):
     
     save_confusion(np.array([tp,tn,fp,fn,tpr,tnr,netpred,ppv,npv,acc]),env)
 
+def segment_confusion_result(confusion,env):
+    tp=confusion[0]; tn=confusion[1]; fp=confusion[2]; fn=confusion[3]
+    ppv=tp/(tp+fp)
+    acc=(tp+tn)/(tp+tn+fp+fn)
+    
+    print("TP : "+str(tp))
+    print("FP : "+str(fp))
+    print("FN : "+str(fn))
+    print("PPV : "+str(ppv))
+    print("Accuracy : "+str(acc))
+    
+    save_confusion(np.array([tp,tn,fp,fn,ppv,acc]),env)
+
 def save_confusion(confusion,env):
     new_row=[datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     new_row.extend(confusion)
@@ -122,15 +142,29 @@ def get_segment_confusion(true,pred):
         return
   else:
     tp=0; tn=0; fp=0; fn=0
+    pred_progress=0; true_progress=0
+    pred_start=0; pred_end=0; true_start=0; true_end=0
     for i in range(len(true)):
-        if true[i]==pred[i]:
-            if true[i]==0:
-                tn=tn+1
-            else:
+        # pred
+        if (pred[i]==1) and (pred_progress==0): # prediction segment start
+            pred_progress=1
+            pred_start=i
+        elif (pred[i]==0) and (pred_progress==1): # prediction segment end
+            pred_progress=0
+            pred_end=i+1
+            # Decide TP of FP
+            if any(true[pred_start:pred_end]):
                 tp=tp+1
-        else:
-            if pred[i]==0:
-                fn=fn+1
             else:
-                fp=fp+1    
+                fp=fp+1
+        # true
+        if (true[i]==1) and (true_progress==0): # label segment start
+            true_progress=1
+            true_start=i
+        elif (true[i]==0) and (true_progress==1): # label segment end
+            true_progress=0
+            true_end=i+1
+            # Check FN
+            if not any(pred[true_start:true_end]):
+                fn=fn+1
     return np.array([tp,tn,fp,fn])
