@@ -27,7 +27,7 @@ def fill_edge(image,x_idx,y_idx,value,bound,dist=1):
 
 def transform_img(data,window=900,y_range=110,step=60):
     icps=np.int64(data[1])
-    icps=np.array([icp for icp in icps if 0<icp<=y_range])
+    # icps=np.array([icp for icp in icps if 0<icp<=y_range])
     image_set=[]
     start_time=0
     while start_time<(len(icps)-window):

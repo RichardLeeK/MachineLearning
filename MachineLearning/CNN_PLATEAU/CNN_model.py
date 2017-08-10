@@ -1,5 +1,6 @@
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, Flatten
 from keras.models import Model, Sequential
+from keras.regularizers import l1,l2,l1_l2
 import numpy as np
 import dataGenerator as dg
 
@@ -31,13 +32,17 @@ def train_encoder(model,img, env):
     return model
 
 def reorganize_model(env):
+    reg={"kernel":l1(.01),"bias":None,"activation":None}
     model=Sequential()
     model.add(Conv2D(10, 5, activation='relu', padding='same',input_shape=(110, 900, 1), name='conv_1'))
     model.add(MaxPooling2D((2, 2), padding='same', name='pool_1'))
     model.add(Dense(32,name='encoded'))
     
-    model.add(Conv2D(10, 5, activation='relu', padding='same'))
-    model.add(Conv2D(10, 5, activation='relu', padding='same'))
+    model.add(Conv2D(10, 5, activation='relu', padding='same', 
+                     kernel_regularizer=reg["kernel"], bias_regularizer=reg["bias"], activity_regularizer=reg["activation"]))
+    model.add(MaxPooling2D((2, 2), padding='same'))
+    model.add(Conv2D(10, 5, activation='relu', padding='same', 
+                     kernel_regularizer=reg["kernel"], bias_regularizer=reg["bias"], activity_regularizer=reg["activation"]))
     model.add(Flatten())
     model.add(Dense(1,activation='sigmoid'))
 

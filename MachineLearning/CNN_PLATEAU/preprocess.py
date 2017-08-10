@@ -55,8 +55,18 @@ def transfrom_dataset(datadict):
 def transform_data(data):
     groups=get_group(data)
     cur_data=group_by_sec(data,groups)
+    cur_data=cut_artefact(cur_data)
     return cur_data
 
+def cut_artefact(data,y_range=110):
+  timelapse=data[0]
+  icps=data[1]
+  result=[]
+  for i in range(len(icps)):
+    if 0<icps[i]<=y_range:
+      result.append([timelapse[i],icps[i]])
+
+  return np.array(result).T
 
 def cut_idx_by_hour(data,hour_limit=3):
     timelapse=data[0]

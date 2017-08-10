@@ -40,9 +40,19 @@ def predict_data(data,model,env,pp=1):
 
 def translate_pred(pred,total_len,x_range=900,step=60):
     result=[0]*total_len
+    plateau_progress=0
     for pidx in range(len(pred)):
         p=pred[pidx]
+        if (p==0) and (plateau_progress==1):
+          for idx in range((pidx-1)*step,(pidx-1)*step+x_range):
+                if idx>=total_len:
+                    continue
+                result[idx]=1
+          plateau_progress=0
         if p==1:
+          if plateau_progress==0:
+            plateau_progress=1
+          else:
             for idx in range(pidx*step,pidx*step+x_range):
                 if idx>=total_len:
                     continue

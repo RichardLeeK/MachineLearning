@@ -18,6 +18,7 @@ if __name__ == '__main__':
     env=Env()
     env.load_config("./config.ini")
     env=fc.get_path(env)
+    skip_pre_train=env.get_config("system","skip_pre_train",type="int")
     memory_save=env.get_config("system","memory_save",type="int")
 
     # get train data
@@ -32,12 +33,11 @@ if __name__ == '__main__':
     elif menu==1:
         print("Transform Data")
         datadict=pp.transfrom_dataset(datadict)
-
         window=env.get_config("CNN","window",type="int")
         y_range=env.get_config("CNN","y_range",type="int")
         step=env.get_config("CNN","step",type="int")
         encoded_dim=env.get_config("CNN","encoded_dim",type="int")
-    
+
         print("Transform into image")
         imgdict=ppimg.transform_imgdict(datadict,window=window,y_range=y_range,step=step)
 
@@ -45,28 +45,29 @@ if __name__ == '__main__':
         label_path=env.get_config("path","label_path")
         labeldata=lb.load_label(label_path)
         labeldict=lb.dataset_labeling(datadict,env.file["train_file_list"],labeldata)
-        labeldict=lb.imgset_labeling(labeldict,window=900,y_range=110,step=60)
+
+        labeldict=lb.imgset_labeling(labeldict,window=window,y_range=y_range,step=step)
 
         print("Reshape data")
         trainX=cd.make_cnn_X_all(imgdict)
         trainY=cd.make_cnn_Y_all(labeldict)
-
+       
         if memory_save==1:
             save_path=env.get_config("path","memory_save_path")
             np.save(save_path+"/data",trainX)
             gc.collect()
             trainX=np.load(save_path+"/data.npy",mmap_mode="r")
-
-        print("Generate Pre-training Model")
-        model=cm.generate_cnn_autoencoder(x_range=window,y_range=y_range,encoded_dim=32)
+        if skip_pre_train==0:
+          print("Generate Pre-training Model")
+          model=cm.generate_cnn_autoencoder(x_range=window,y_range=y_range,encoded_dim=32)
     
-        print("Pre-Training")
-        model=cm.train_encoder(model,trainX,env)
+          print("Pre-Training")
+          model=cm.train_encoder(model,trainX,env)
 
-        model.summary()
+          model.summary()
         
-        mc.save_model(model,env)
-
+          mc.save_model(model,env)
+        model=mc.load_model(env)
         print("Reorganize Model")
         model=cm.reorganize_model(env)
         

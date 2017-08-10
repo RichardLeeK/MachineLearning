@@ -61,7 +61,7 @@ def draw_graph(data,true,pred,fileidx,env,idx_group=[]):
         plt.plot(timelapse,icp,'b',label="ICP")
         plt.plot(timelapse,cur_true.reshape(-1),'g',label="true")
         plt.plot(timelapse,cur_pred.reshape(-1),'r--',label="prediction")
-        plt.grid()
+        # plt.grid()
         plt.legend()
     plt.savefig(graph_path+"/"+str(fileidx)+"_"+str(figure_num)+'.png')
     plt.clf()
@@ -115,3 +115,22 @@ def get_confusion(true, pred):
                 else:
                     fp=fp+1    
         return np.array([tp,tn,fp,fn])
+
+def get_segment_confusion(true,pred):
+  if len(true)!=len(pred):
+        print("Wrong Input")
+        return
+  else:
+    tp=0; tn=0; fp=0; fn=0
+    for i in range(len(true)):
+        if true[i]==pred[i]:
+            if true[i]==0:
+                tn=tn+1
+            else:
+                tp=tp+1
+        else:
+            if pred[i]==0:
+                fn=fn+1
+            else:
+                fp=fp+1    
+    return np.array([tp,tn,fp,fn])
