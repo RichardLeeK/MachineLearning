@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # get train data
     datadict=fc.get_dataset(env.file["train_file_list"],feature=env.get_config("data","feature",type="list"))
 
-    menu=int_input("0 : Test model / 1 : Train model")
+    menu=int_input("0 : Test model / 1 : Train model / 2 : Cross-validation")
 
     if menu==0:
         model=mc.load_model(env)
@@ -81,4 +81,6 @@ if __name__ == '__main__':
 
         print("Evaluate Model")
         ev.eval_model(model,env)
+    elif menu==2:
+        print("Cross-validation")        
 ############################

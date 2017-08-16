@@ -80,7 +80,7 @@ def save_model(model,env):
     with open(json_path, "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
-    model.save_weights(h5_path,overwrite="True")
+    model.save_weights(h5_path,overite="True")
     print("Saved model to disk")
 
 def load_model(env):

@@ -6,6 +6,7 @@ import preprocess as pp
 import csv
 import datetime
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def eval_model(model,env):
     testlist=env.file["test_file_list"]
@@ -37,31 +38,60 @@ def eval_model(model,env):
             else:
                 confusion=confusion+get_confusion(true,pred)
         if save_time==1:
-            save_pred_time(pred,dataX[0],filepath,env)
+            pred_times=save_pred_time(pred,dataX[0],env)
+            write_pred_data(dataX,pred_times,filepath,env)
     if save_result==1:
         if segment_test==1:
             segment_confusion_result(confusion,env)
         else:
             confusion_result(confusion,env)
-def save_pred_time(pred,timelapse,filepath,env):
+
+def write_pred_data(data,times,filename,env):
     result_path=env.get_config("path","result_path")
-    f = open(result_path+"/time.csv", 'a', encoding='utf-8', newline='')
-    wr = csv.writer(f)
+    timelapse=data[0]
+    icps=data[1]
+
+    filename=filename[filename.find("\\")+1:filename.find(".csv")]
+    print(filename)
+    result=np.empty((0,2))
+
+    for i in range(len(timelapse)):
+        cur_time=timelapse[i]
+        cur_icp=icps[i]
+        for time in times:
+            if (cur_time>time[0]) and (cur_time<time[1]):
+                result=np.vstack((result,np.array([cur_time,cur_icp])))
+                break
+    result_df=pd.DataFrame(result,columns=["DateTime","ICP"])
+    result_df.to_csv(result_path+"/"+str(filename)+".csv")
+
+def save_pred_time(pred,timelapse,env):
+    cut_range=env.get_config("test","cut_range",type="int")
+
+    pred_times=np.empty((0,2))
     pred_progress=0;
     pred_start=0; pred_end=0;
-    for i in range(len(pred)):
+    total_len=len(pred)
+    for i in range(total_len):
         # pred
         if (pred[i]==1) and (pred_progress==0): # prediction segment start
             pred_progress=1
-            pred_start=i
+            if i-cut_range<0:
+                pred_start=0
+            else:
+                pred_start=i-cut_range
         elif (pred[i]==0) and (pred_progress==1): # prediction segment end
             pred_progress=0
-            pred_end=i
-            time_row=np.array([filepath,timelapse[pred_start],timelapse[pred_end]])
-            wr.writerow(time_row)
+            if i+cut_range>total_len:
+                pred_end=total_len
+            else:
+                pred_end=i+cut_range
+           
+            time_row=np.array([timelapse[pred_start],timelapse[pred_end-1]])
+            pred_times=np.vstack((pred_times,time_row))
         else:
             continue
-    f.close()
+    return pred_times
 def draw_graph(data,true,pred,fileidx,env,idx_group=[]):
     figure_x=env.get_config("test","figure_x",type="int")
     figure_y=env.get_config("test","figure_y",type="int")
