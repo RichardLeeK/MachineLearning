@@ -29,6 +29,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CNN_PLATEAU.py" />
+    <Compile Include="cross_validation.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="dataGenerator.py">
       <SubType>Code</SubType>
     </Compile>

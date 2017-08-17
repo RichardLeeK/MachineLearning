@@ -12,6 +12,7 @@ import CNN_data as cd
 import CNN_model as cm
 import modelController as mc
 import evaluator as ev
+import cross_validation as cv
 
 ############main############
 if __name__ == '__main__':
@@ -82,5 +83,15 @@ if __name__ == '__main__':
         print("Evaluate Model")
         ev.eval_model(model,env)
     elif menu==2:
-        print("Cross-validation")        
+        print("Cross-validation")
+        k=env.get_config("validation","fold_num",type="int")
+        if k<=0:
+            print("K value is Wrong")
+        else:    
+            print("Data preprocess & save")
+            group=cv.divide_group(env.file["train_file_list"],k)
+            print(group)
+            train,test=cv.define_group(group,3,env)
+            print(train)
+            print(test)
 ############################
