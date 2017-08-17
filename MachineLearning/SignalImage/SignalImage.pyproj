@@ -26,10 +26,16 @@
     <Compile Include="cnn_classifier.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="label_classification.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="manifold.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="optimizer.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="peak_detection.py">
