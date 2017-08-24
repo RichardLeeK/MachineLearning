@@ -43,6 +43,7 @@ def reorganize_model(env):
     model.add(MaxPooling2D((2, 2), padding='same'))
     model.add(Conv2D(10, 5, activation='relu', padding='same', 
                      kernel_regularizer=reg["kernel"], bias_regularizer=reg["bias"], activity_regularizer=reg["activation"]))
+    model.add(MaxPooling2D((2, 2), padding='same'))
     model.add(Flatten())
     model.add(Dense(1,activation='sigmoid'))
 

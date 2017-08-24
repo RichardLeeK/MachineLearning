@@ -2,6 +2,28 @@ import os
 import pandas as pd
 import numpy as np
 
+def get_real_name(filename):
+    return filename[filename.find("\\")+1:filename.find("_AR.csv")]
+
+def load_and_store(filelist,env):
+    feature=env.get_config("data","feature",type="list")
+    save_path=env.get_config("path","memory_save_path")
+
+    # error check
+    if len(filelist)<=0:
+        print("You have to set the filelist")
+        return
+
+    # load data and store
+    for filenum in range(len(filelist)):
+        file=filelist[filenum]
+        data=get_data(file,feature)
+        name=get_real_name(file)
+        print(len(data.T))
+        print(name)
+        np.save(save_path+"/"+name,data)
+
+
 def get_dataset(filelist,feature=['datetime','icp']):
     """    
     Load csv files from filelist
@@ -85,6 +107,15 @@ def df_filtering(df,feature=[]):
     # get column names from dataframe
     df_colname=df.columns.values
 
+    
+    for cur_f in feature:
+        for i in range(len(df_colname)):
+            cur_col=df_colname[i]
+            cur_col=cur_col.lower()
+            if cur_col==cur_f:
+                selected_idx.append(i)
+                break;
+    '''
     # Find index of feature 
     for i in range(len(df_colname)):
         cur_col=df_colname[i]
@@ -95,6 +126,7 @@ def df_filtering(df,feature=[]):
             if col_name in cur_col:
                 selected_idx.append(i)
                 break;
+    '''
     result_df=df.iloc[:,selected_idx].dropna()
     return result_df
 

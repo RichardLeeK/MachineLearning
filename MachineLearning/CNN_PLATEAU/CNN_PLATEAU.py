@@ -13,6 +13,7 @@ import CNN_model as cm
 import modelController as mc
 import evaluator as ev
 import cross_validation as cv
+import aggregator as aggr
 
 ############main############
 if __name__ == '__main__':
@@ -22,8 +23,7 @@ if __name__ == '__main__':
     skip_pre_train=env.get_config("system","skip_pre_train",type="int")
     memory_save=env.get_config("system","memory_save",type="int")
 
-    # get train data
-    datadict=fc.get_dataset(env.file["train_file_list"],feature=env.get_config("data","feature",type="list"))
+    
 
     menu=int_input("0 : Test model / 1 : Train model / 2 : Cross-validation")
 
@@ -32,6 +32,8 @@ if __name__ == '__main__':
         print("Evaluate Model")
         ev.eval_model(model,env)
     elif menu==1:
+        # get train data
+        datadict=fc.get_dataset(env.file["train_file_list"],feature=env.get_config("data","feature",type="list"))
         print("Transform Data")
         datadict=pp.transfrom_dataset(datadict)
         window=env.get_config("CNN","window",type="int")
@@ -83,6 +85,10 @@ if __name__ == '__main__':
         print("Evaluate Model")
         ev.eval_model(model,env)
     elif menu==2:
+        # get train data
+        fc.load_and_store(env.file["train_file_list"],env)
+        aggr.merge_data(env)
+    
         print("Cross-validation")
         k=env.get_config("validation","fold_num",type="int")
         if k<=0:

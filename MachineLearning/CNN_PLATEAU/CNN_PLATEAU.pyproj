@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="aggregator.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CNN_data.py">
       <SubType>Code</SubType>
     </Compile>

@@ -24,13 +24,15 @@ def eval_model(model,env):
 
     for fileidx in range(len(testlist)):
         filepath=testlist[fileidx]
-        dataX=fc.get_data(filepath,feature)
-        dataX=pp.transform_data(dataX)
+        data=fc.get_data(filepath,feature)
+        print(data)
+        dataX=pp.transform_data(data)
+        print(dataX)
         true=lb.data_labeling(dataX,filepath,labeldata)
         pred=mc.predict_data(dataX,model,env,pp=0)
 
         if save_graph==1:
-            idx_group=pp.cut_idx_by_hour(dataX,hour_limit=3)
+            idx_group=pp.cut_idx_by_hour(dataX,hour_limit=hour_limit)
             figure_num=draw_graph(dataX,true,pred,fileidx,env,idx_group)        
         if save_result==1:
             if segment_test==1:
@@ -38,8 +40,10 @@ def eval_model(model,env):
             else:
                 confusion=confusion+get_confusion(true,pred)
         if save_time==1:
+            print("Get Prediction time")
             pred_times=save_pred_time(pred,dataX[0],env)
-            write_pred_data(dataX,pred_times,filepath,env)
+            print("Write to csv")
+            write_pred_data(data,pred_times,filepath,env)
     if save_result==1:
         if segment_test==1:
             segment_confusion_result(confusion,env)
@@ -48,23 +52,44 @@ def eval_model(model,env):
 
 def write_pred_data(data,times,filename,env):
     result_path=env.get_config("path","result_path")
+
     timelapse=data[0]
     icps=data[1]
+    abps=data[2]
 
     filename=filename[filename.find("\\")+1:filename.find(".csv")]
     print(filename)
-    result=np.empty((0,2))
+    result=np.empty((0,3))
+    print(len(timelapse))
 
+    time_idx=0
+    progress=0
+    max_time=len(times)
+    print(max_time)
     for i in range(len(timelapse)):
+        if i%100000==0:
+            print(i)
+        start_time=times[time_idx][0]
+        end_time=times[time_idx][1]
         cur_time=timelapse[i]
         cur_icp=icps[i]
-        for time in times:
-            if (cur_time>time[0]) and (cur_time<time[1]):
-                result=np.vstack((result,np.array([cur_time,cur_icp])))
+        cur_abp=abps[i]
+        if cur_time>start_time:
+            progress=1
+            result=np.vstack((result,np.array([cur_time,cur_abp,cur_icp])))
+        if cur_time>end_time:
+            progress=0
+            print("Write")
+            result_df=pd.DataFrame(result,columns=["DateTime","ABP","ICP"])
+            result_df.to_csv(result_path+"/"+str(filename)+"_"+str(time_idx)+".csv",index=False)
+            result=np.empty((0,3))
+            time_idx=time_idx+1
+            if time_idx>=max_time:
                 break
-    result_df=pd.DataFrame(result,columns=["DateTime","ICP"])
-    result_df.to_csv(result_path+"/"+str(filename)+".csv")
-
+    if progress==1:
+        print("Write")
+        result_df=pd.DataFrame(result,columns=["DateTime","ABP","ICP"])
+        result_df.to_csv(result_path+"/"+str(filename)+"_"+str(time_idx)+".csv",index=False)
 def save_pred_time(pred,timelapse,env):
     cut_range=env.get_config("test","cut_range",type="int")
 

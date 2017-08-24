@@ -33,13 +33,16 @@ def group_by_sec(data,groups):
     new_data=[]
     for idxlist in groups:
         icp=0
+        abp=0
         time=0
         for idx in idxlist:
             icp=icp+data[1][idx]
+            abp=abp+data[2][idx]
             time=time+data[0][idx]
         icp=icp/len(idxlist)
+        abp=abp/len(idxlist)
         time=time/len(idxlist)
-        cur_data=[time,icp]
+        cur_data=[time,icp,abp]
         new_data.append(np.array(cur_data))
     return np.array(new_data).T
 
@@ -61,10 +64,11 @@ def transform_data(data):
 def cut_artefact(data,y_range=110):
   timelapse=data[0]
   icps=data[1]
+  abps=data[2]
   result=[]
   for i in range(len(icps)):
     if 0<icps[i]<=y_range:
-      result.append([timelapse[i],icps[i]])
+      result.append([timelapse[i],icps[i],abps[i]])
 
   return np.array(result).T
 
